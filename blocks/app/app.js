@@ -14,9 +14,12 @@
         render() {
             this.node.innerHTML = `
                 <div class="app">
-                    Chat App
-                    <div class="app__name js-name"></div>
-                    <div class="app__submit js-submit"></div>
+                    <div class="app__list">
+                    </div>
+                    <div class="app__control">
+                        <div class="app__name js-name"></div>
+                        <div class="app__submit js-submit"></div>
+                    </div>
                 </div>`;
 
             let button = new Button(this.node.querySelector('.js-submit'), {
