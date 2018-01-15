@@ -1,40 +1,4 @@
-*{
-    box-sizing: border-box;
-}
-
-.app{
-    width:300px;
-    border:1px solid grey;
-}
-.app__list{
-    height:500px;
-    color:rgb(19, 16, 7);
-    padding:10px;
-    padding-bottom:0;
-    background: rgb(241, 232, 232);
-}
-.app__control{
-    border-top:1px solid grey;
-    color:rgb(19, 16, 7);
-    padding:10px;
-    background: rgb(241, 232, 232);
-}
-.input{
-    border:1px solid grey;
-    width:100%;
-    border-radius: 3px;
-    padding:10px;
-}
-.button{
-    width:100%;
-    border-radius: 3px;
-    padding:10px;
-    border:1px solid rgb(183, 158, 250);
-    background: rgb(212, 225, 248);
-}
 .app__name{
-    margin:20px 0 20px 0;
-}
-.app__submit{
-    margin-bottom: 10px;
+
+    
 }

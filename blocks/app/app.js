@@ -1,64 +1,50 @@
-(function () {
-    'use strict';
+import Button from '../button/button';
+import Block from '../block';
+import Textarea from '../textarea/textarea';
+import Input from '../input/input';
 
-    const Block = window.Block;
-    const Input = window.Input;
-    const Button = window.Button;
-    const Textarea = window.Textarea;
-    
-    const pageAuth = `
-    <div class="app">
-        <div class="app__list">
-        </div>
-        <div class="app__control">
-            <div class="app__name js-name"></div>
-            <div class="app__submit js-submit"></div>
-        </div>
-    </div>`;
+import template from './app.pug';
 
-    const pageChat = `
-    <div class="app">
-        <div class="app__list">
-        </div>
-        <div class="app__control">
-            <div class="app__send-message js-send-message"></div>
-        </div>
-    </div>
-    `;
+class App extends Block {
 
-    class App extends Block {
-
-        constructor(node, options = {}) {
-            super(node, options);
-        }
-
-        authorize(){
-            this.node.addEventListener("click",() => {this.node.innerHTML = pageChat;});
-        } //нужно одолжить потом этот метод для кнопки
-
-        render() {
-            this.node.innerHTML = pageChat;
-
-            let button = new Button(this.node.querySelector('.js-submit'), {
-                text: 'Войти'
-            });
-
-            let input = new Input(this.node.querySelector('.js-name'), {
-                value: '',
-                placeholder: 'Ваше имя'
-            });
-
-            let textarea = new Textarea(this.node.querySelector('.js-send-message'), {
-                value: '',
-                placeholder: 'Текст сообщения'
-            });
-
-            button.render();
-            input.render();
-            textarea.render();
-        }
-
+    constructor(node, options = {}) {
+        super(node, options);
     }
 
-    window.App = App;
-})();
+    render() {
+        this.node.innerHTML = template({
+            name: 'Чатик',
+            nums: [1,2,3,4]
+        });
+
+        let button = new Button(this.node.querySelector('.js-submit-name'), {
+            text: 'Войти'
+        });
+
+        let input = new Input(this.node.querySelector('.js-name'), {
+            value: '',
+            placeholder: 'Введите имя'
+        });
+
+        let buttonMessage = new Button(this.node.querySelector('.js-submit'), {
+            text: 'Отправить'
+        });
+
+        let textareaMessage = new Textarea(this.node.querySelector('.js-textarea'), {
+            placeholder: 'Введите сообщение',
+            rows: 5
+        });
+
+        button.render();
+        input.render();
+        textareaMessage.render();
+        buttonMessage.render();
+    }
+
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    let app = new App(document.querySelector('.js-app'));
+    app.render();
+});
+
