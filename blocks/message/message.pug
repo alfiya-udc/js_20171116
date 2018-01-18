@@ -1,3 +1,14 @@
-div(class=['message','message__send','js-message'])
-    div.message__header #{senderName}
-        div.message__body #{messageText}
+mixin messageItemRecieve()
+    div.message.message_receive
+        div.message__header= user
+        div.message__body= message
+        
+mixin messageItemSend()
+    div.message.message_send
+        div.message__header= user
+        div.message__body= message
+
+if isOwner
+    +messageItemRecieve()
+else
+    +messageItemSend()
