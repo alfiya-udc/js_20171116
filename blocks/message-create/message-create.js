@@ -25,6 +25,12 @@ export default class CreateMsg extends Block {
         
         textarea.render();
         button.render();
+
+        button.onClick = () => {
+            this.onSubmit(textarea.getValue());
+        }
     }
+
+    onSubmit() {}
     
 }

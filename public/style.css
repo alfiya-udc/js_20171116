@@ -75,6 +75,7 @@ body {
 
 .chat__inner {
     border-bottom: 2px solid #fff;
+    padding: 32px;
 }
 .chat__footer {
     padding: 30px;

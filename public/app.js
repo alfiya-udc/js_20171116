@@ -325,7 +325,7 @@ function pug_rethrow(err, filename, lineno, str){
     throw err;
   }
   try {
-    str = str || __webpack_require__(24).readFileSync(filename, 'utf8')
+    str = str || __webpack_require__(25).readFileSync(filename, 'utf8')
   } catch (ex) {
     pug_rethrow(err, null, lineno)
   }
@@ -629,7 +629,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(15);
+var	fixUrls = __webpack_require__(16);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -1029,11 +1029,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 var _view = __webpack_require__(5);
 
 var _view2 = _interopRequireDefault(_view);
 
-var _auth = __webpack_require__(20);
+var _auth = __webpack_require__(21);
 
 var _auth2 = _interopRequireDefault(_auth);
 
@@ -1067,12 +1069,6 @@ var Auth = function (_View) {
 
         _this.node.innerHTML = (0, _auth2.default)();
 
-        var model = _user2.default.load();
-
-        if (model) {
-            location.href = './#chat';
-        }
-
         _this.button = new _button2.default(_this.node.querySelector('.js-submit'), {
             text: 'Войти'
         });
@@ -1092,6 +1088,17 @@ var Auth = function (_View) {
     }
 
     _createClass(Auth, [{
+        key: 'show',
+        value: function show() {
+            var model = _user2.default.load();
+
+            if (model) {
+                location.href = './#chat';
+            }
+
+            _get(Auth.prototype.__proto__ || Object.getPrototypeOf(Auth.prototype), 'show', this).call(this);
+        }
+    }, {
         key: 'login',
         value: function login() {
             var name = this.input.getValue();
@@ -1124,11 +1131,15 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 var _view = __webpack_require__(5);
 
 var _view2 = _interopRequireDefault(_view);
 
-var _chat = __webpack_require__(21);
+var _chat = __webpack_require__(22);
 
 var _chat2 = _interopRequireDefault(_chat);
 
@@ -1139,6 +1150,10 @@ var _messageCreate2 = _interopRequireDefault(_messageCreate);
 var _message = __webpack_require__(12);
 
 var _message2 = _interopRequireDefault(_message);
+
+var _messages = __webpack_require__(15);
+
+var _messages2 = _interopRequireDefault(_messages);
 
 var _user = __webpack_require__(3);
 
@@ -1162,19 +1177,59 @@ var Chat = function (_View) {
 
         _this.node.innerHTML = (0, _chat2.default)();
 
-        var model = _user2.default.load();
-
-        if (!model) {
-            location.href = './#auth';
-        }
-
         _this.form = new _messageCreate2.default(document.querySelector('.js-form'));
         _this.form.render();
 
-        _this.messages = new _message2.default(_this.node.querySelector('.js-list'));
-        _this.messages.render();
+        _this.form.onSubmit = function (message) {
+            _this.messages.addMessage(_this.user.name, message);
+        };
+
         return _this;
     }
+
+    _createClass(Chat, [{
+        key: 'addMessage',
+        value: function addMessage(data) {
+            var node = document.createElement('div');
+
+            var message = new _message2.default(node, data);
+            message.render();
+            this.node.querySelector('.js-list').appendChild(node);
+        }
+    }, {
+        key: 'onPoll',
+        value: function onPoll(items) {
+            var _this2 = this;
+
+            this.node.querySelector('.js-list').innerHTML = '';
+            items.forEach(function (data) {
+                return _this2.addMessage(data);
+            });
+        }
+    }, {
+        key: 'show',
+        value: function show() {
+            var _this3 = this;
+
+            this.user = _user2.default.load();
+            this.messages = new _messages2.default();
+
+            if (!this.user) {
+                location.href = './#auth';
+            }
+
+            _get(Chat.prototype.__proto__ || Object.getPrototypeOf(Chat.prototype), 'show', this).call(this);
+            this.messages.fetch(function (items) {
+                items.forEach(function (data) {
+                    return _this3.addMessage(data);
+                });
+
+                _this3.messages.start(function (data) {
+                    return _this3.onPoll(data);
+                });
+            });
+        }
+    }]);
 
     return Chat;
 }(_view2.default);
@@ -1259,11 +1314,11 @@ var _button = __webpack_require__(2);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _messageCreate = __webpack_require__(18);
+var _messageCreate = __webpack_require__(19);
 
 var _messageCreate2 = _interopRequireDefault(_messageCreate);
 
-__webpack_require__(22);
+__webpack_require__(23);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1287,6 +1342,8 @@ var CreateMsg = function (_Block) {
     _createClass(CreateMsg, [{
         key: 'render',
         value: function render() {
+            var _this2 = this;
+
             this.node.innerHTML = (0, _messageCreate2.default)();
 
             var button = new _button2.default(this.node.querySelector('.js-submit'), {
@@ -1300,7 +1357,14 @@ var CreateMsg = function (_Block) {
 
             textarea.render();
             button.render();
+
+            button.onClick = function () {
+                _this2.onSubmit(textarea.getValue());
+            };
         }
+    }, {
+        key: 'onSubmit',
+        value: function onSubmit() {}
     }]);
 
     return CreateMsg;
@@ -1325,11 +1389,11 @@ var _block = __webpack_require__(0);
 
 var _block2 = _interopRequireDefault(_block);
 
-var _message = __webpack_require__(19);
+var _message = __webpack_require__(20);
 
 var _message2 = _interopRequireDefault(_message);
 
-__webpack_require__(23);
+__webpack_require__(24);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1353,11 +1417,7 @@ var Message = function (_Block) {
     _createClass(Message, [{
         key: 'render',
         value: function render() {
-            this.node.innerHTML = (0, _message2.default)({
-                user: "Василий Пупкин",
-                message: "Lorem123 4123  ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                isOwner: false
-            });
+            this.node.innerHTML = (0, _message2.default)(this.options);
         }
     }]);
 
@@ -1407,6 +1467,11 @@ var Textarea = function (_Block) {
         value: function render() {
             this.node.innerHTML = '\n        <textarea class="textarea" rows="' + this.options.rows + '" placeholder="' + this.options.placeholder + '"></textarea>';
         }
+    }, {
+        key: 'getValue',
+        value: function getValue() {
+            return this.node.querySelector('textarea').value;
+        }
     }]);
 
     return Textarea;
@@ -1449,6 +1514,99 @@ window.addEventListener('DOMContentLoaded', function () {
 
 /***/ }),
 /* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var KEY = "59c92ddf04067cfd77ad9ac4";
+var URL = "https://js20170727quiz-9acd.restdb.io/rest/messages";
+
+var Message = function () {
+    function Message() {
+        _classCallCheck(this, Message);
+    }
+
+    _createClass(Message, [{
+        key: "fetch",
+        value: function fetch(done) {
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET', URL);
+
+            xhr.addEventListener('readystatechange', function () {
+
+                if (xhr.readyState === 4) {
+
+                    try {
+                        var data = JSON.parse(xhr.responseText);
+                        done(data);
+                    } catch (err) {
+                        console.error(err);
+                    }
+                }
+            });
+
+            xhr.setRequestHeader("content-type", "application/json");
+            xhr.setRequestHeader("x-apikey", KEY);
+            xhr.setRequestHeader("cache-control", "no-cache");
+
+            xhr.send();
+        }
+    }, {
+        key: "addMessage",
+        value: function addMessage(user, text, done) {
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('POST', URL);
+
+            xhr.addEventListener('readystatechange', function () {
+
+                if (xhr.readyState === 4) {
+
+                    try {
+                        console.log('sent');
+                    } catch (err) {
+                        console.error(err);
+                    }
+                }
+            });
+
+            xhr.setRequestHeader("content-type", "application/json");
+            xhr.setRequestHeader("x-apikey", KEY);
+            xhr.setRequestHeader("cache-control", "no-cache");
+
+            xhr.send(JSON.stringify({
+                author: user,
+                message: text
+            }));
+        }
+    }, {
+        key: "start",
+        value: function start(done) {
+            var _this = this;
+
+            setInterval(function () {
+                _this.fetch(done);
+            }, 3000);
+        }
+    }]);
+
+    return Message;
+}();
+
+exports.default = Message;
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1543,7 +1701,7 @@ module.exports = function (css) {
 };
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(4)(false);
@@ -1557,7 +1715,7 @@ exports.push([module.i, ".message-create__submit {\n  margin-top: 10px;\n  text-
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(4)(false);
@@ -1571,7 +1729,7 @@ exports.push([module.i, ".message {\n  margin-bottom: 30px; }\n\n.message__heade
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var pug = __webpack_require__(1);
@@ -1580,7 +1738,7 @@ function template(locals) {var pug_html = "", pug_mixins = {}, pug_interp;pug_ht
 module.exports = template;
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var pug = __webpack_require__(1);
@@ -1602,7 +1760,7 @@ pug_mixins["messageItemSend"]();
 module.exports = template;
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var pug = __webpack_require__(1);
@@ -1611,7 +1769,7 @@ function template(locals) {var pug_html = "", pug_mixins = {}, pug_interp;pug_ht
 module.exports = template;
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var pug = __webpack_require__(1);
@@ -1620,13 +1778,13 @@ function template(locals) {var pug_html = "", pug_mixins = {}, pug_interp;pug_ht
 module.exports = template;
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(16);
+var content = __webpack_require__(17);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -1651,13 +1809,13 @@ if(false) {
 }
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(17);
+var content = __webpack_require__(18);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -1682,7 +1840,7 @@ if(false) {
 }
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
