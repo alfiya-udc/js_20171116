@@ -1,12 +1,12 @@
 'use strict';
 
-import Block from '../block';
-import Button from '../button/button';
-import Textarea from '../textarea/textarea';
+import Block from '../../blocks/block';
+import Button from '../../blocks/button/button';
+import Textarea from '../../blocks/textarea/textarea';
 
-import Chat from '../chat/chat';
+import Chat from '../../blocks/chat/chat';
 import Auth from '../auth/auth';
-import CreateMsg from '../message-create/message-create';
+import CreateMsg from '../../blocks/message-create/message-create';
 
 import template from './app.pug';
 import './app.scss';

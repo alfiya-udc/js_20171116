@@ -15,9 +15,8 @@ export default class Chat extends Block {
     render() {
         this.node.innerHTML = template();
         
-        let message = new Message(this.node.querySelector('.messages'));
-        
-        message.render();
+
     }
-    
+
+
 }

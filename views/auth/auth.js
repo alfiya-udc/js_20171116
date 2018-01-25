@@ -12,12 +12,6 @@ export default class Auth extends View {
         super(node);
         this.node.innerHTML = template();
 
-        let model = User.load();
-
-        if (model) {
-            location.href = './#chat';
-        }
-
         this.button = new Button(this.node.querySelector('.js-submit'), {
             text: 'Войти'
         });
@@ -31,6 +25,16 @@ export default class Auth extends View {
         this.button.render();
 
         this.button.onClick = () => { this.login() };
+    }
+
+    show() {
+        let model = User.load();
+
+        if (model) {
+            location.href = './#chat';
+        }
+
+        super.show();
     }
 
     login() {
